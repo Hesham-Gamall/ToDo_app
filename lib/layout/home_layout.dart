@@ -30,6 +30,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
   var titleController = TextEditingController();
+  var desController = TextEditingController();
   var dateController = TextEditingController();
   var timeController = TextEditingController();
 
@@ -90,6 +91,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                       notifyTime = timeController.text;
                       notifyDate = dateController.text;
                       cubit.insertToDatabase(
+                        description: desController.text,
                         title: titleController.text,
                         time: timeController.text,
                         date: dateController.text,
@@ -165,6 +167,42 @@ class _HomeLayoutState extends State<HomeLayout> {
                                         ),
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(15),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    SizedBox(
+                                      height: 130,
+                                      width: double.infinity,
+                                      child: TextFormField(
+                                        maxLines: 10,
+                                        controller: desController,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        // validator: (value) {
+                                        //   if (value!.isEmpty) {
+                                        //     return 'title must not be empty';
+                                        //   }
+                                        //   return null;
+                                        // },
+                                        cursorColor: const Color(0xFFde2821),
+                                        decoration: InputDecoration(
+                                          labelText: 'TASK DESCRIPTION',
+                                          prefixIcon: const Icon(
+                                            Icons.description_outlined,
+                                            color: Color(0xFFde2821),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: const BorderSide(color: Colors.white,width: 2.0),
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
                                         ),
                                       ),
                                     ),

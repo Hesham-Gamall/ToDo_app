@@ -6,9 +6,7 @@ import 'package:todo/modules/done_tasks/done_tasks.dart';
 import 'package:todo/modules/tasks/tasks.dart';
 import 'package:todo/shared/cubit/states.dart';
 
-class AppCubit extends Cubit<AppStates>
-{
-
+class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
 
   static AppCubit get(context) => BlocProvider.of(context);
@@ -27,8 +25,7 @@ class AppCubit extends Cubit<AppStates>
     'ARCHIVED TASKS',
   ];
 
-  void changeIndex(int index)
-  {
+  void changeIndex(int index) {
     currentIndex = index;
     emit(AppChangeBNBState());
   }
@@ -46,7 +43,7 @@ class AppCubit extends Cubit<AppStates>
         print('database created');
         database
             .execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT, time TEXT, status TEXT,notify INTEGER)')
+                'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT, time TEXT, status TEXT, description TEXT,notify INTEGER)')
             .then((value) {
           print('table created');
         }).catchError((error) {
@@ -67,47 +64,50 @@ class AppCubit extends Cubit<AppStates>
     required String title,
     required String time,
     required String date,
+    required String description,
     required int notify,
   }) async {
-    await database.transaction((txn) => txn.rawInsert(
-          'INSERT INTO tasks(title,date,time,status,notify) VALUES("$title","$date","$time","new","$notify")'
-      ).then((value) {
+    await database.transaction(
+      (txn) => txn
+          .rawInsert(
+              'INSERT INTO tasks(title,date,time,status,description,notify) VALUES("$title","$date","$time","new","$description","$notify")')
+          .then((value) {
         print('$value inserted successfully');
         emit(AppInsertDBState());
         getDataFromDatabase(database);
       }).catchError((error) {
-      print('error when inserting new record ${error.toString()}');
-    }),);
-
+        print('error when inserting new record ${error.toString()}');
+      }),
+    );
   }
 
-  void getDataFromDatabase(database)
-  {
+  void getDataFromDatabase(database) {
     newTasks = [];
     doneTasks = [];
     archivedTasks = [];
 
-
     GetDBLoadingState();
     emit(AppGetDBLoadingState());
 
-    database.rawQuery('SELECT * FROM tasks').then((value)
-    {
-      value.forEach((element){
+    database.rawQuery('SELECT * FROM tasks').then((value) {
+      value.forEach((element) {
         if (element['status'] == 'new') {
           newTasks.add(element);
         } else if (element['status'] == 'done') {
           doneTasks.add(element);
-        }else {archivedTasks.add(element);}
+        } else {
+          archivedTasks.add(element);
+        }
       });
       emit(AppGetDBState());
     });
   }
 
-  void updateData({
+
+  updateData({
     required String status,
     required int id,
-}) async {
+  }) {
     database.rawUpdate(
       'UPDATE tasks SET status = ? WHERE id = ?',
       [status, id],
@@ -117,13 +117,23 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
-  void deleteData({
+  Future<void> updateDescription({
+    required String? description,
     required int id,
-}) async {
+  }) async {
     database.rawUpdate(
-      'DELETE FROM tasks WHERE id = ?',
-      [id]
+      'UPDATE tasks SET description = ? WHERE id = ?',
+      [description, id],
     ).then((value) {
+      getDataFromDatabase(database);
+      emit(AppUpdateDesState());
+    });
+  }
+
+  Future<void> deleteData({
+    required int id,
+  }) async {
+    database.rawUpdate('DELETE FROM tasks WHERE id = ?', [id]).then((value) {
       getDataFromDatabase(database);
       emit(AppDeleteDBState());
     });
@@ -132,15 +142,13 @@ class AppCubit extends Cubit<AppStates>
   bool isBSShown = false;
   IconData fabIcon = Icons.edit;
 
-
   void changeBSState({
     required bool isShow,
     required IconData icon,
-})
-  {
+  }) {
     isBSShown = isShow;
     fabIcon = icon;
-    
+
     emit(AppChangeBSState());
   }
 
@@ -171,5 +179,9 @@ class AppCubit extends Cubit<AppStates>
         ],
       ),
     );
+  }
+
+  void refreshApp() {
+    emit(AppGetRefreshState());
   }
 }
