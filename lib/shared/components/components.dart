@@ -81,6 +81,7 @@ Widget buildNewTaskItem(Map model, BuildContext context) {
    },
  );
 }
+
 Widget buildDoneTaskItem(Map model, BuildContext context) {
    AppCubit cubit = AppCubit.get(context);
  return Dismissible(
@@ -155,6 +156,7 @@ Widget buildDoneTaskItem(Map model, BuildContext context) {
    },
  );
 }
+
 Widget buildArchivedTaskItem(Map model, BuildContext context) {
    AppCubit cubit = AppCubit.get(context);
  return Dismissible(

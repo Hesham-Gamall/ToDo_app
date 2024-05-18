@@ -9,14 +9,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await AwesomeNotifications().initialize(
-    'resource://drawable/icon', [
+    'resource://drawable/icon2', [
     NotificationChannel(
       channelGroupKey:'high_importance_channel_group',
       channelKey: 'high_importance_channel',
       channelName: 'Basic notifications',
       channelDescription: 'Notification channel for basic tests',
       defaultColor: const Color(0xFFde2821),
-      ledColor: Colors.white,
+      // ledColor: Colors.white,
       importance: NotificationImportance.Max,
       channelShowBadge: true,
       onlyAlertOnce: true,
@@ -31,7 +31,7 @@ void main() async {
       channelName: 'schedule notifications',
       channelDescription: 'Notification channel for basic tests',
       defaultColor: const Color(0xFFde2821),
-      ledColor: Colors.white,
+      // ledColor: Colors.white,
       importance: NotificationImportance.Max,
       channelShowBadge: true,
       onlyAlertOnce: true,
