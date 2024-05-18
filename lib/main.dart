@@ -47,7 +47,7 @@ void main() async {
       ),
       NotificationChannelGroup(
         channelGroupKey: 'high_importance_schedule_channel_group',
-        channelGroupName: 'Group 1',
+        channelGroupName: 'Group 2',
       ),
     ],
     debug: true,
