@@ -1,5 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:todo/shared/cubit/cubit.dart';
 
@@ -12,10 +13,20 @@ Widget buildNewTaskItem(Map model, BuildContext context) {
         context: context,
         builder: (context) {
           return AlertDialog(
+            contentPadding: const EdgeInsets.all(10),
+            titlePadding: const EdgeInsets.all(10),
+            actionsPadding: const EdgeInsets.all(10),
+
             scrollable: true,
             title: Row(
               children: [
-                Text('${model['title']}'),
+                SizedBox(
+                  width: 230,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('${model['title']}',maxLines: 1,style: const TextStyle(overflow: TextOverflow.ellipsis,),),
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
                     onPressed: () {
@@ -23,27 +34,34 @@ Widget buildNewTaskItem(Map model, BuildContext context) {
                       return Navigator.pop(context);
                     },
                     icon: const Icon(
+                      size: 30,
                       Icons.highlight_remove,
                       color: Color(0xFFde2821),
                     )),
               ],
             ),
-            content: TextFormField(
-              controller: desController,
-              maxLines: 5,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-              keyboardType: TextInputType.text,
-              cursorColor: const Color(0xFFde2821),
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: Color(0xFFde2821), width: 2.0),
-                  borderRadius: BorderRadius.circular(15),
+            content: SizedBox(
+              width: 300,
+              child: TextFormField(
+                scrollPadding: const EdgeInsets.all(5),
+                maxLength: 500,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                controller: desController,
+                maxLines: 5,
+                style: const TextStyle(
+                  color: Colors.black,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                keyboardType: TextInputType.text,
+                cursorColor: const Color(0xFFde2821),
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xFFde2821), width: 2.0),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
@@ -73,7 +91,7 @@ Widget buildNewTaskItem(Map model, BuildContext context) {
                     },
                     color: const Color(0xFFde2821),
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: const Text('Update description',style: TextStyle(color: Colors.white),),
+                    child: const Text('Update description',style: TextStyle(color: Colors.white,),),
                   ),
                 ],
               ),
@@ -170,9 +188,20 @@ Widget buildDoneTaskItem(Map model, BuildContext context) {
         context: context,
         builder: (context) {
           return AlertDialog(
+            contentPadding: const EdgeInsets.all(10),
+            titlePadding: const EdgeInsets.all(10),
+            actionsPadding: const EdgeInsets.all(10),
+
+            scrollable: true,
             title: Row(
               children: [
-                Text('${model['title']}'),
+                SizedBox(
+                  width: 230,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('${model['title']}',maxLines: 1,style: const TextStyle(overflow: TextOverflow.ellipsis,),),
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
                     onPressed: () {
@@ -180,27 +209,34 @@ Widget buildDoneTaskItem(Map model, BuildContext context) {
                       return Navigator.pop(context);
                     },
                     icon: const Icon(
+                      size: 30,
                       Icons.highlight_remove,
                       color: Color(0xFFde2821),
                     )),
               ],
             ),
-            content: TextFormField(
-              controller: desController,
-              maxLines: 5,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-              keyboardType: TextInputType.text,
-              cursorColor: const Color(0xFFde2821),
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                  const BorderSide(color: Color(0xFFde2821), width: 2.0),
-                  borderRadius: BorderRadius.circular(15),
+            content: SizedBox(
+              width: 300,
+              child: TextFormField(
+                scrollPadding: const EdgeInsets.all(5),
+                maxLength: 500,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                controller: desController,
+                maxLines: 5,
+                style: const TextStyle(
+                  color: Colors.black,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                keyboardType: TextInputType.text,
+                cursorColor: const Color(0xFFde2821),
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                    const BorderSide(color: Color(0xFFde2821), width: 2.0),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
@@ -223,12 +259,14 @@ Widget buildDoneTaskItem(Map model, BuildContext context) {
                       cubit.updateDescription(
                         id: model['id'],
                         description: desController.text,
-                      );
+                      ).then((value) {
+                        showToast(text: 'Updated successfully', state: ToastStates.success);
+                      });
                       return cubit.refreshApp();
                     },
                     color: const Color(0xFFde2821),
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: const Text('Update description',style: TextStyle(color: Colors.white),),
+                    child: const Text('Update description',style: TextStyle(color: Colors.white,),),
                   ),
                 ],
               ),
@@ -320,9 +358,20 @@ Widget buildArchivedTaskItem(Map model, BuildContext context) {
         context: context,
         builder: (context) {
           return AlertDialog(
+            contentPadding: const EdgeInsets.all(10),
+            titlePadding: const EdgeInsets.all(10),
+            actionsPadding: const EdgeInsets.all(10),
+
+            scrollable: true,
             title: Row(
               children: [
-                Text('${model['title']}'),
+                SizedBox(
+                  width: 230,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('${model['title']}',maxLines: 1,style: const TextStyle(overflow: TextOverflow.ellipsis,),),
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
                     onPressed: () {
@@ -330,27 +379,34 @@ Widget buildArchivedTaskItem(Map model, BuildContext context) {
                       return Navigator.pop(context);
                     },
                     icon: const Icon(
+                      size: 30,
                       Icons.highlight_remove,
                       color: Color(0xFFde2821),
                     )),
               ],
             ),
-            content: TextFormField(
-              controller: desController,
-              maxLines: 5,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-              keyboardType: TextInputType.text,
-              cursorColor: const Color(0xFFde2821),
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                  const BorderSide(color: Color(0xFFde2821), width: 2.0),
-                  borderRadius: BorderRadius.circular(15),
+            content: SizedBox(
+              width: 300,
+              child: TextFormField(
+                scrollPadding: const EdgeInsets.all(5),
+                maxLength: 500,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                controller: desController,
+                maxLines: 5,
+                style: const TextStyle(
+                  color: Colors.black,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                keyboardType: TextInputType.text,
+                cursorColor: const Color(0xFFde2821),
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                    const BorderSide(color: Color(0xFFde2821), width: 2.0),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
@@ -373,12 +429,14 @@ Widget buildArchivedTaskItem(Map model, BuildContext context) {
                       cubit.updateDescription(
                         id: model['id'],
                         description: desController.text,
-                      );
+                      ).then((value) {
+                        showToast(text: 'Updated successfully', state: ToastStates.success);
+                      });
                       return cubit.refreshApp();
                     },
                     color: const Color(0xFFde2821),
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: const Text('Update description',style: TextStyle(color: Colors.white),),
+                    child: const Text('Update description',style: TextStyle(color: Colors.white,),),
                   ),
                 ],
               ),
