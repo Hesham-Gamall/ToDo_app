@@ -41,7 +41,7 @@ class TasksScreen extends StatelessWidget {
                   'No Tasks Yet, Please Add Some Tasks',
                   style: TextStyle(
                     color: Colors.grey[850],
-                    fontSize: 18.0,
+                    fontSize: 20,
                   ),
                 ),
               ],

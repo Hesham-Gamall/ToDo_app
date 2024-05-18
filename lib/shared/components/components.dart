@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/shared/cubit/cubit.dart';
 
@@ -76,6 +77,7 @@ Widget buildNewTaskItem(Map model, BuildContext context) {
    onDismissed: (direction)
    {
      cubit.deleteData(id: model['id']);
+     AwesomeNotifications().cancel(model['notify']);
    },
  );
 }
@@ -149,6 +151,7 @@ Widget buildDoneTaskItem(Map model, BuildContext context) {
    onDismissed: (direction)
    {
      cubit.deleteData(id: model['id']);
+     AwesomeNotifications().cancel(model['notify']);
    },
  );
 }
@@ -226,6 +229,7 @@ Widget buildArchivedTaskItem(Map model, BuildContext context) {
    onDismissed: (direction)
    {
      cubit.deleteData(id: model['id']);
+     AwesomeNotifications().cancel(model['notify']);
    },
  );
 }

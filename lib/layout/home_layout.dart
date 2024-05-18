@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,12 +6,43 @@ import 'package:intl/intl.dart';
 import 'package:todo/shared/cubit/cubit.dart';
 import 'package:todo/shared/cubit/states.dart';
 
-class HomeLayout extends StatelessWidget {
+import '../shared/notification_services.dart';
+
+class HomeLayout extends StatefulWidget {
+  const HomeLayout({super.key});
+
+  @override
+  State<HomeLayout> createState() => _HomeLayoutState();
+}
+
+class _HomeLayoutState extends State<HomeLayout> {
+
+  @override
+  void initState() {
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationService.onActionReceivedMethod,
+      onNotificationDisplayedMethod: NotificationService.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod: NotificationService.onDismissActionReceivedMethod,
+      onNotificationCreatedMethod: NotificationService.onNotificationCreatedMethod,
+    );
+    super.initState();
+  }
+
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
   var titleController = TextEditingController();
   var dateController = TextEditingController();
   var timeController = TextEditingController();
+
+  String? notifyTitle;
+  String? notifyTime;
+  String? notifyDate;
+
+  int id = 0;
+
+  late DateTime sD;
+  late TimeOfDay sT;
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +87,40 @@ class HomeLayout extends StatelessWidget {
                 onPressed: () {
                   if (cubit.isBSShown) {
                     if (formKey.currentState!.validate()) {
+                      notifyTitle = titleController.text;
+                      notifyTime = timeController.text;
+                      notifyDate = dateController.text;
                       cubit.insertToDatabase(
                         title: titleController.text,
                         time: timeController.text,
                         date: dateController.text,
-                      );
+                        notify: id,
+                      ).then((value) {
+                        AwesomeNotifications().createNotification(
+                          content: NotificationContent(
+                            id: id,
+                            channelKey: 'high_importance_channel',
+                            title: notifyTitle,
+                            largeIcon: 'resource://drawable/icon',
+                            body: 'A reminder for this task was created on $notifyDate at $notifyTime.',
+                          ),
+                        ).then((value) {
+                          AwesomeNotifications().createNotification(
+                            content: NotificationContent(
+                              id: id,
+                              channelKey: 'schedule',
+                              title: notifyTitle,
+                              largeIcon: 'resource://drawable/icon',
+                              body: 'It\'s your task time, go and finish it 💪',
+                              displayOnForeground: true,
+                              displayOnBackground: true,
+                              wakeUpScreen: true,
+                            ),
+                            schedule: NotificationCalendar(year: sD.year,month: sD.month,day: sD.day, hour: sT.hour,minute: sT.minute),
+                          );
+                          id += 1;
+                        });
+                      });
                       formKey.currentState?.reset();
                     }
                   } else {
@@ -128,8 +189,9 @@ class HomeLayout extends StatelessWidget {
                                                 context: context,
                                                 initialTime: TimeOfDay.now())
                                             .then((value) {
+                                              sT = value!;
                                           timeController.text =
-                                              value!.format(context).toString();
+                                              value.format(context).toString();
                                         });
                                       },
                                       cursorColor: const Color(0xFFde2821),
@@ -163,8 +225,9 @@ class HomeLayout extends StatelessWidget {
                                           firstDate: DateTime.now(),
                                           lastDate: DateTime.parse('2030-12-31'),
                                         ).then((value) {
+                                          sD = value!;
                                           dateController.text =
-                                              DateFormat.yMMMd().format(value!);
+                                              DateFormat.yMMMd().format(value);
                                         });
                                       },
                                       validator: (value) {
@@ -217,6 +280,8 @@ class HomeLayout extends StatelessWidget {
                 type: BottomNavigationBarType.fixed,
                 unselectedItemColor: Colors.white,
                 currentIndex: cubit.currentIndex,
+                unselectedLabelStyle: const TextStyle(fontFamily: 'Jaro',fontSize: 15),
+                selectedLabelStyle: const TextStyle(fontFamily: 'Jaro',fontSize: 17),
                 onTap: (index) {
                   cubit.changeIndex(index);
                 },

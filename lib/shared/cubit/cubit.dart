@@ -46,7 +46,7 @@ class AppCubit extends Cubit<AppStates>
         print('database created');
         database
             .execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT, time TEXT, status TEXT)')
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT, time TEXT, status TEXT,notify INTEGER)')
             .then((value) {
           print('table created');
         }).catchError((error) {
@@ -63,13 +63,14 @@ class AppCubit extends Cubit<AppStates>
     });
   }
 
-  insertToDatabase({
+  Future<void> insertToDatabase({
     required String title,
     required String time,
     required String date,
+    required int notify,
   }) async {
     await database.transaction((txn) => txn.rawInsert(
-          'INSERT INTO tasks(title,date,time,status) VALUES("$title","$date","$time","new")'
+          'INSERT INTO tasks(title,date,time,status,notify) VALUES("$title","$date","$time","new","$notify")'
       ).then((value) {
         print('$value inserted successfully');
         emit(AppInsertDBState());

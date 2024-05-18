@@ -38,10 +38,10 @@ class ArchivedTasksScreen extends StatelessWidget {
                 color: Colors.grey[850],
               ),
               Text(
-                'No Tasks Yet, Please Add Some Tasks',
+                'There are no archived tasks',
                 style: TextStyle(
                   color: Colors.grey[850],
-                  fontSize: 18.0,
+                  fontSize: 20,
                 ),
               ),
             ],

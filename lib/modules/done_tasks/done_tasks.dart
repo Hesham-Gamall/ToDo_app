@@ -38,10 +38,10 @@ class DoneTasksScreen extends StatelessWidget {
                   color: Colors.grey[850],
                 ),
                 Text(
-                  'No Tasks Yet, Please Add Some Tasks',
+                  'There are no tasks completed yet',
                   style: TextStyle(
                     color: Colors.grey[850],
-                    fontSize: 18.0,
+                    fontSize: 20,
                   ),
                 ),
               ],
