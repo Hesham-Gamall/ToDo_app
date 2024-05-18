@@ -6,6 +6,7 @@ import 'package:todo/shared/bloc_observer.dart';
 
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await AwesomeNotifications().initialize(
     'resource://drawable/icon', [
@@ -25,7 +26,7 @@ void main() async {
       defaultRingtoneType: DefaultRingtoneType.Notification,
     ),
     NotificationChannel(
-      channelGroupKey:'high_importance_schedule_channel_group',
+      channelGroupKey:'high_importance_channel_group',
       channelKey: 'schedule',
       channelName: 'schedule notifications',
       channelDescription: 'Notification channel for basic tests',
@@ -44,10 +45,6 @@ void main() async {
       NotificationChannelGroup(
         channelGroupKey: 'high_importance_channel_group',
         channelGroupName: 'Group 1',
-      ),
-      NotificationChannelGroup(
-        channelGroupKey: 'high_importance_schedule_channel_group',
-        channelGroupName: 'Group 2',
       ),
     ],
     debug: true,
